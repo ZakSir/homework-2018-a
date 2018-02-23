@@ -13,7 +13,7 @@
         /// </summary>
         /// <param name="path">The path requested.</param>
         public InvalidIndexException(string path)
-            : base(string.Format(TraceResources.ERR_INDEXER_INVALID_INDEX, path))
+            : base($"The path '{path}' does not represent a valid property location or indexer")
         {
             // chained constructor
         }

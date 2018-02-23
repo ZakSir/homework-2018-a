@@ -206,7 +206,9 @@ namespace Homework.ProblemA
             Dictionary<string, object> it1Flat = it1.ToFlatDictionary();
             Dictionary<string, object> it2Flat = it2.ToFlatDictionary();
 
-            IEnumerable<string> result = it1Flat.Where(_a => it2Flat.ContainsKey(_a.Key)).Select(_ => _.Key);
+            IEnumerable<string> result = it1Flat
+                .Where(_a => it2Flat.ContainsKey(_a.Key)).Select(_ => _.Key)
+                .ToArray(); // execute enumeration
 
             return result;
         }

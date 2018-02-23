@@ -5,4 +5,8 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Homework.Reflection\Homework.Reflection.csproj" />
+  </ItemGroup>
+
 </Project>

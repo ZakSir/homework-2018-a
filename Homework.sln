@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Reflection", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Resources", "src\Homework.Resources\Homework.Resources.csproj", "{369291BC-DF15-4A45-A351-DFD545733A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "src\Common\Common.csproj", "{DA87F090-8D62-4634-8597-C47B2E7C3919}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Common", "src\Common\Homework.Common.csproj", "{DA87F090-8D62-4634-8597-C47B2E7C3919}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,7 +11,12 @@ namespace Homework.ProblemA
     /// </summary>
     public class ObjectPropertyPair : ObjectPropertyBase
     { 
+        /// <summary>
+        /// Gets or sets a value indicating whether the objects on either side are the same type. 
+        /// For example ObjectFoo may have a property called 'Length' that is the size of the collection and ObjectBar ay have a property called 'Length' that is the human readable distance that the car has traveled and may be emitted as '53miles 32Feet'.
+        /// </summary>
         public bool IsUnderlyingTypeMatch { get; set; }
+
         /// <summary>
         /// The value of <see cref="ObjectPropertyBase.PropertyName"/> in object A.
         /// </summary>

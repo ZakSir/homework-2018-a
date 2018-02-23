@@ -512,6 +512,8 @@
                 // add current type to stack
                 typeStack.AddFirst(currentTypeProperty);
 
+                Indexed.DiagnosticTrace.TraceInformation($"starting subindexing on {currentPath}{currentTypeProperty.Name}");
+
                 BuildIndex(currentTypeProperty.PropertyType, accessor, $"{currentPath}{currentTypeProperty.Name}{FSLASH}", typeStack);
 
                 typeStack.RemoveFirst();

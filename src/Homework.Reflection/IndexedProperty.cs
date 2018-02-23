@@ -373,7 +373,7 @@
             }
 
 #region Assertions
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -404,7 +404,7 @@
             }
 
 #region Assertions
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -435,7 +435,7 @@
             }
 
 #region Assertions
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -469,7 +469,7 @@
             }
 
 #region Assertions
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -514,7 +514,7 @@
             }
 
 #region Assertions
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -534,7 +534,7 @@
 
         private object TryGetFromParentObject(object objParent)
         {
-            Debug.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
 
             object result = this.getter.Invoke(objParent, null);
 

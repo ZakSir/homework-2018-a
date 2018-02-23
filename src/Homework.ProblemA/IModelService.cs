@@ -12,7 +12,9 @@ namespace Homework.ProblemA
             where T1 : class
             where T2 : class;
 
-        IEnumerable<string> GetMatchingPropertyNames(object a, object b);
+        IEnumerable<string> GetMatchingPropertyNames<T1, T2>(T1 a, T2 b)
+            where T1 : class
+            where T2 : class;
 
         string GetCryptographicHashCode(object obj, string hashAlgorithmName);
     }

@@ -51,7 +51,7 @@ namespace Homework.FrontEnd.Controllers.api
         // GET: api/values
         [HttpGet]
         [Route("api/homework/differentials")]
-        public IActionResult GetDifferentials([FromQuery]string typeList, [FromQuery]bool isHuman)
+        public IActionResult GetDifferentials([FromQuery]string typeList, [FromQuery]bool isHuman = false)
         {
             if(string.IsNullOrWhiteSpace(typeList))
             {
@@ -93,37 +93,60 @@ namespace Homework.FrontEnd.Controllers.api
         }
 
         [HttpGet]
+        [Route("api/homework/object/{name}")]
+        public IActionResult GetObjectByName(string name)
+        {
+            name = '/' + name;
+            if (!testObjects.Value.ContainsKey(name))
+            {
+                BadRequest("Object not available. please use /api/homework/testobjects");
+            }
+
+            Indexed indexedSubObject = new Indexed(testObjects.Value[name], true);
+
+            return Ok(indexedSubObject.ToFlatDictionary());
+        }
+
+
+        [HttpGet]
         [Route("api/homework/testobjects")]
         public IActionResult GetTestObjects()
         {
-            var firstLevel = testObjects.Value.ToFlatDictionary().Keys.Select(s => s.TrimStart('/')).Where(s => !s.Contains('/'));
-
-            return Ok(firstLevel);
+            return Ok(GetFirstLevelProperties(testObjects.Value));
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        private IEnumerable<string> GetFirstLevelProperties(object o)
         {
-            return "value";
+            Indexed ix = o as Indexed ?? new Indexed(o, true);
+
+            IEnumerable<string> firstLevel = testObjects.Value.ToFlatDictionary().Keys.Select(s => s.TrimStart('/')).Where(s => !s.Contains('/'));
+
+            return firstLevel;
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+        //// GET api/values/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// POST api/values
+        //[HttpPost]
+        //public void Post([FromBody]string value)
+        //{
+        //}
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// PUT api/values/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
+
+        //// DELETE api/values/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

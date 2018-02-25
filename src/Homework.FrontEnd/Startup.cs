@@ -55,12 +55,6 @@ namespace Homework.FrontEnd
                 }
             });
 
-            // logging
-            app.Use(async (context, theTask) =>
-            {
-                await theTask();
-            });
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

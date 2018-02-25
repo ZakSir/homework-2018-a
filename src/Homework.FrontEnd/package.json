@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ZakSir/homework-2018-a#readme",
   "dependencies": {
+    "gulp": "^4.0.0"
     "gulp-concat": "^2.6.1",
     "gulp-cssmin": "^0.2.0",
     "gulp-less": "^4.0.0",
@@ -29,10 +30,13 @@
     "rimraf": "^2.6.2"
   },
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-concat": "2.6.1",
-    "gulp-cssmin": "0.1.7",
-    "gulp-uglify": "2.0.1",
-    "rimraf": "2.6.1"
+    "gulp": "^4.0.0"
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-less": "^4.0.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-using": "^0.1.1",
+    "less": "^3.0.1",
+    "rimraf": "^2.6.2"
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,11 +39,25 @@ namespace Homework.FrontEnd
 
             app.UseStaticFiles();
 
+            // request logging
+            app.Use(async (context, theTask) =>
+            {
+                try
+                {
+                    await theTask();
+                }
+                catch (Exception ex)
+                {
+                    Telemetry.Client.TrackException(ex);
+
+                    ExceptionDispatchInfo.Capture(ex).Throw();
+                    throw ex;
+                }
+            });
+
             // logging
             app.Use(async (context, theTask) =>
             {
-                context.TraceIdentifier = $"homework_{Guid.NewGuid().ToString()}";
-
                 await theTask();
             });
 

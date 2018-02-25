@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemA.TestExe",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.FrontEnd", "src\Homework.FrontEnd\Homework.FrontEnd.csproj", "{4A847FFB-F839-42B0-8E49-5DBD956D84A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAutoRestEXE", "test\exe\TestAutoRestEXE\TestAutoRestEXE.csproj", "{02C92BAE-4665-46CE-A039-970E6A6A53F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,14 @@ Global
 		{4A847FFB-F839-42B0-8E49-5DBD956D84A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A847FFB-F839-42B0-8E49-5DBD956D84A3}.Release|x64.ActiveCfg = Release|Any CPU
 		{4A847FFB-F839-42B0-8E49-5DBD956D84A3}.Release|x64.Build.0 = Release|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +109,7 @@ Global
 		{52CD6504-1DAF-4C9D-9D4E-16594DDD7804} = {79FA5DBE-74A3-4B88-8151-6DBC185F83A9}
 		{B2FEFE85-9CFB-4F30-A8F1-739B3693D629} = {79FA5DBE-74A3-4B88-8151-6DBC185F83A9}
 		{139EE9E2-0382-48D6-9B64-F1E2590A5D33} = {B2FEFE85-9CFB-4F30-A8F1-739B3693D629}
+		{02C92BAE-4665-46CE-A039-970E6A6A53F6} = {B2FEFE85-9CFB-4F30-A8F1-739B3693D629}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84EC41C2-AEB9-4358-AFBF-40A79288CE6E}

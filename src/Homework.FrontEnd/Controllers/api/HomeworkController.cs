@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Homework;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -50,7 +51,7 @@ namespace Homework.FrontEnd.Controllers.api
         // GET: api/values
         [HttpGet]
         [Route("api/homework/differentials")]
-        public IActionResult GetDifferentials([FromQuery]string typeList)
+        public IActionResult GetDifferentials([FromQuery]string typeList, [FromQuery]bool isHuman)
         {
             if(string.IsNullOrWhiteSpace(typeList))
             {
@@ -81,6 +82,11 @@ namespace Homework.FrontEnd.Controllers.api
 
                     diffs.Add(od);
                 }
+            }
+
+            if(isHuman)
+            {
+                return Ok(JsonConvert.SerializeObject(diffs, Formatting.Indented));
             }
 
             return Ok(diffs);

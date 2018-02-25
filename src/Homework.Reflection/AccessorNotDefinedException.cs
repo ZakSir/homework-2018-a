@@ -23,7 +23,7 @@
         /// <param name="path">The path of the request</param>
         public AccessorNotDefinedException(Type rootType, string direction, string path)
             : base(string.Format(
-                TraceResources.EXC_INDEX_ACESSORNOTDEFINEDMESSAGE,
+                "The accessor for type {0} cannot be found for path {1} direction {2}",
                 rootType.FullName ?? MISSING,
                 path ?? MISSING,
                 direction ?? MISSING))

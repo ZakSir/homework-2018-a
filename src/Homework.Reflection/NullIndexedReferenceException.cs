@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="path">The path requested.</param>
         public NullIndexedReferenceException(string path)
-            : base(string.Format(TraceResources.EXC_INDEX_NULLINDEXEDREFERENCE, path))
+            : base(string.Format("The path {0} does not have an accessor defined.", path))
         {
             // chained constructor
         }

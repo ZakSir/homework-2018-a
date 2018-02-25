@@ -8,6 +8,7 @@
 #endif
     using System.Diagnostics;
     using System.Reflection;
+    using Common;
     using Homework.Resources;
 
     /// <summary>
@@ -339,9 +340,7 @@
                 throw new ArgumentNullException(nameof(pathContext), "The path used to seek the object via context is null");
             }
 
-#region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
-#endregion
+            Indexed.DiagnosticTrace.Assert(objParent != null, "Cannot coninue getting accessor tree as the parent object is null");
 
             object parentObject = this.TryGetFromParentObject(objParent);
             if (parentObject == null)
@@ -369,11 +368,11 @@
         {
             if (string.IsNullOrEmpty(pathContext))
             {
-                throw new ArgumentNullException(nameof(pathContext), TraceResources.ERR_INDEXER_PATH_CONTEXT_NULL);
+                throw new ArgumentNullException(nameof(pathContext));
             }
 
 #region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, "Parent object is null");
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -431,11 +430,11 @@
         {
             if (string.IsNullOrEmpty(pathContext))
             {
-                throw new ArgumentNullException(nameof(pathContext), TraceResources.ERR_INDEXER_PATH_CONTEXT_NULL);
+                throw new ArgumentNullException(nameof(pathContext), "The incoming path context is null");
             }
 
 #region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, "The parent Object is null");
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -465,11 +464,11 @@
         {
             if (string.IsNullOrEmpty(pathContext))
             {
-                throw new ArgumentNullException(nameof(pathContext), TraceResources.ERR_INDEXER_PATH_CONTEXT_NULL);
+                throw new ArgumentNullException(nameof(pathContext));
             }
 
 #region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, "The parent object is null");
 #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
@@ -534,7 +533,7 @@
 
         private object TryGetFromParentObject(object objParent)
         {
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
+            Indexed.DiagnosticTrace.Assert(objParent != null, $"{nameof(objParent)} is null");
 
             object result = this.getter.Invoke(objParent, null);
 
@@ -542,7 +541,7 @@
             {
                 if (!this.coalesceNulls)
                 {
-                    throw new NullReferenceException(TraceResources.ERR_INDEXER_GET_PARENT_OBJECT_NULL_NOT_COALESCE);
+                    throw new NullReferenceException($"A null reference was encountered in the object tree, {this.coalesceNulls} is set to {false}.");
                 }
             }
 

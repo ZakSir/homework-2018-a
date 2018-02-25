@@ -110,6 +110,7 @@ namespace Homework.ProblemA
                             };
 
                             mismatching.Add(opp);
+                            it2SkipNames.Add(pair.Key);
 
                             continue;
                         }

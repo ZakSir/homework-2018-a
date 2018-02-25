@@ -23,6 +23,11 @@ namespace Homework
         /// </summary>
         private static TraceSource diagnosticTrace;
 
+        static Indexed()
+        {
+            InitializeDiagnosticTracing();
+        }
+
 
         /// <summary>
         /// Gets the diagnostic trace source to attach a listener to.

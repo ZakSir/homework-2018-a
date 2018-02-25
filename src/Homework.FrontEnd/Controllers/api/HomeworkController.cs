@@ -92,6 +92,15 @@ namespace Homework.FrontEnd.Controllers.api
             return Ok(diffs);
         }
 
+        [HttpGet]
+        [Route("api/homework/testobjects")]
+        public IActionResult GetTestObjects()
+        {
+            var firstLevel = testObjects.Value.ToFlatDictionary().Keys.Select(s => s.TrimStart('/')).Where(s => !s.Contains('/'));
+
+            return Ok(firstLevel);
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)

@@ -10,7 +10,7 @@ namespace Homework.ProblemA
     {
         ObjectDifferential GetDifferential(object a, object b);
 
-        IEnumerable<string> GetMatchingPropertyNames(object a, object b);
+        IEnumerable<ObjectProperty> GetMatchingPropertyNames(object a, object b);
 
         string GetCryptographicHashCode(object obj, string hashAlgorithmName);
     }

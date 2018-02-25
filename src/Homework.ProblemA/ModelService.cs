@@ -333,24 +333,9 @@ namespace Homework.ProblemA
             return od;
         }
 
-        public IEnumerable<string> GetMatchingPropertyNames(object a, object b)
+        public IEnumerable<ObjectProperty> GetMatchingPropertyNames(object a, object b)
         {
-            Indexed it1 = new Indexed(a);
-            Indexed it2 = new Indexed(b);
-
-            Type it1t = a.GetType();
-            Type it2t = b.GetType();
-
-            bool indexMatch = it1t == it2t;
-
-            Dictionary<string, object> it1Flat = it1.ToFlatDictionary();
-            Dictionary<string, object> it2Flat = it2.ToFlatDictionary();
-
-            IEnumerable<string> result = it1Flat
-                .Where(_a => it2Flat.ContainsKey(_a.Key)).Select(_ => _.Key)
-                .ToArray(); // execute enumeration
-
-            return result;
+            return this.GetDifferential(a, b).MatchingProperties;
         }
     }
 }

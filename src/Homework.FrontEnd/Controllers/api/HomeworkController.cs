@@ -48,6 +48,38 @@ namespace Homework.FrontEnd.Controllers.api
             }
         }
 
+        [HttpGet]
+        [Route("api/homework/similarities")]
+        public IActionResult GetSimilarities([FromQuery]string A, [FromQuery] string B)
+        {
+            if (string.IsNullOrWhiteSpace(A))
+            {
+                BadRequest($"An object for {nameof(A)} must be specified");
+            }
+
+            if (String.IsNullOrWhiteSpace(B))
+            {
+                BadRequest($"An object for {nameof(B)} must be specified");
+            }
+
+            string aName = '/' + A;
+            string bName = '/' + B;
+
+            if (!testObjects.Value.ContainsKey(aName))
+            {
+                BadRequest($"Object not available in {nameof(A)}. please use /api/homework/testobjects");
+            }
+
+            if (!testObjects.Value.ContainsKey(bName))
+            {
+                BadRequest($"Object not available in {nameof(B)}. please use /api/homework/testobjects");
+            }
+
+            IEnumerable<Homework.ProblemA.ObjectProperty> result = ModelService.GetMatchingPropertyNames(testObjects.Value[aName], testObjects.Value[bName]);
+
+            return Ok(result);
+        }
+
         // GET: api/values
         [HttpGet]
         [Route("api/homework/differentials")]

@@ -15,5 +15,7 @@ namespace Homework.ProblemA
         /// Gets or sets the value of the object.
         /// </summary>
         public string Value;
+
+
     }
 }

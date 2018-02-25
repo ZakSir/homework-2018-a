@@ -107,6 +107,21 @@ namespace Homework.FrontEnd.Controllers.api
             return Ok(indexedSubObject.ToFlatDictionary());
         }
 
+        [HttpGet]
+        [Route("api/homework/hashobject/{name}")]
+        public IActionResult GetObjectHashByName(string name)
+        {
+            name = '/' + name;
+            if (!testObjects.Value.ContainsKey(name))
+            {
+                BadRequest("Object not available. please use /api/homework/testobjects");
+            }
+
+            string hash = ModelService.GetCryptographicHashCode(testObjects.Value[name], "md5");
+
+            return Ok(hash);
+        }
+
 
         [HttpGet]
         [Route("api/homework/testobjects")]

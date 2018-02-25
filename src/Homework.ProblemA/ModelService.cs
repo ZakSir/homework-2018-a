@@ -22,11 +22,29 @@ namespace Homework.ProblemA
         {
             if (!hashAlgorithms.TryGetValue(hashAlgorithmName, out HashAlgorithm ha))
             {
-                HashAlgorithm tha = HashAlgorithm.Create(hashAlgorithmName);
-
-                if (tha == null)
+                HashAlgorithm tha;
+                switch (hashAlgorithmName.ToUpperInvariant())
                 {
-                    throw new InvalidOperationException($"The hash algorithm '{hashAlgorithmName}' is invalid. ");
+                    case nameof(MD5):
+                        tha = MD5.Create();
+                        break;
+                    case nameof(KeyedHashAlgorithm):
+                        tha = KeyedHashAlgorithm.Create();
+                        break;
+                    case nameof(SHA1):
+                        tha = SHA1.Create();
+                        break;
+                    case nameof(SHA256):
+                        tha = SHA256.Create();
+                        break;
+                    case nameof(SHA384):
+                        tha = SHA384.Create();
+                        break;
+                    case nameof(SHA512):
+                        tha = SHA512.Create();
+                        break;
+                    default:
+                        throw new InvalidOperationException($"The hash algorithm '{hashAlgorithmName}' is invalid. ");
                 }
 
                 ha = tha;
@@ -40,13 +58,17 @@ namespace Homework.ProblemA
             byte[] hash;
             using (MemoryStream ms = new MemoryStream())
             {
-                BinaryFormatter bf = new BinaryFormatter();
+                // Warning: Ambiguity - This will serialize the public face of the object. And can be controlled if a JsonObject attributed object is passed.
+                string serialized = JsonConvert.SerializeObject(obj);
 
-                bf.Serialize(ms, obj);
+                using (StreamWriter sw = new StreamWriter(ms))
+                {
+                    sw.Write(serialized);
 
-                ms.Position = 0;
+                    ms.Position = 0;
 
-                hash = ha.ComputeHash(ms);
+                    hash = ha.ComputeHash(ms);
+                }
             }
 
             string stringhash = System.Convert.ToBase64String(hash);

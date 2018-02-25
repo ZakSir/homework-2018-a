@@ -64,7 +64,7 @@
         /// <summary>
         /// if this is set to true, null parent properties will return nulls when requested from this level.
         /// </summary>
-        private readonly bool coalesceNulls;
+        private bool coalesceNulls;
 
         /// <summary>
         /// The handling mode for special object types, like dictionaries and other indexes.
@@ -133,13 +133,22 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Homework.IndexedProperty`2"/> coalesces nulls.
+        /// </summary>
+        /// <value><c>true</c> if coalesce nulls; otherwise, <c>false</c>.</value>
+        public bool CoalesceNulls {
+            get => this.coalesceNulls;
+            set => this.coalesceNulls = value;
+        }
+
+        /// <summary>
         /// Gets a value using the current stack of property indexers. 
         /// </summary>
         /// <param name="context">The origin object to pull the value from.</param>
         /// <param name="pathContext">Used to determine where we are in the path tree.</param>
         /// <param name="propertyIndexes">The stack of property indexes</param>
         /// <returns>The boxed object contained at this location.</returns>
-        public object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes)
+        public object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls = false)
         {
             propertyIndexes.Push(this);
 
@@ -163,7 +172,7 @@
 
                     if (result == null)
                     {
-                        if (this.coalesceNulls)
+                        if (forceCoalesceNulls || this.coalesceNulls)
                         {
                             // we cant go any father, but we can give a null and no exceptions
                             return null;
@@ -182,32 +191,13 @@
         /// <summary>
         /// Gets the value at this location in the property tree
         /// </summary>
-        /// <typeparam name="TT">The type of the property</typeparam>
         /// <param name="context">Root object to traverse</param>
         /// <param name="pathContext">Used to determine where we are in the path tree.</param>
+        /// <param name="forceCoalesceNulls">If set to true will overwrite the local coalesce nulls.</param>
         /// <returns>The value of the object.</returns>
-        public TT Get<TT>(object context, string pathContext)
+        object IIndexedProperty.Get(object context, string pathContext, bool forceCoalesceNulls = false)
         {
-            object o = this.Get(context, pathContext, new Stack<IIndexedProperty>());
-
-            // avoid bad cast
-            if (o == null)
-            {
-                return default(TT);
-            }
-
-            return (TT)o;
-        }
-
-        /// <summary>
-        /// Gets the value at this location in the property tree
-        /// </summary>
-        /// <param name="context">Root object to traverse</param>
-        /// <param name="pathContext">Used to determine where we are in the path tree.</param>
-        /// <returns>The value of the object.</returns>
-        object IIndexedProperty.Get(object context, string pathContext)
-        {
-            object o = this.Get(context, pathContext, new Stack<IIndexedProperty>());
+            object o = this.Get(context, pathContext, new Stack<IIndexedProperty>(), forceCoalesceNulls);
 
             return o;
         }
@@ -231,10 +221,6 @@
                     return this.TryGetFromParentObject(objParent);
                 case IndexSpecialHandlingMode.Array:
                     return this.GetFromParentArrayType(objParent, pathContext);
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471
-                case IndexSpecialHandlingMode.DataRow:
-                    return this.GetFromParentDataRowType(objParent, pathContext);
-#endif
                 case IndexSpecialHandlingMode.Dictionary:
                     return this.GetFromParentIDictionaryType(objParent, pathContext);
                 default:
@@ -313,11 +299,6 @@
                 case IndexSpecialHandlingMode.Array:
                     this.SetFromParentArrayType(objParent, pathContext, value);
                     break;
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471
-                case IndexSpecialHandlingMode.DataRow:
-                    this.SetFromParentDataRowType(objParent, pathContext, value);
-                    break;
-#endif
                 case IndexSpecialHandlingMode.Dictionary:
                     this.SetFromParentDictionaryType(objParent, pathContext, value);
                     break;
@@ -371,9 +352,9 @@
                 throw new ArgumentNullException(nameof(pathContext));
             }
 
-#region Assertions
+            #region Assertions
             Indexed.DiagnosticTrace.Assert(objParent != null, "Parent object is null");
-#endregion
+            #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
             if (parentObject == null)
@@ -387,38 +368,6 @@
 
             dictionary[pathContext] = value;
         }
-
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471
-        /// <summary>
-        /// Sets the value of an object inside a data row type.
-        /// </summary>
-        /// <param name="objParent">The parent object</param>
-        /// <param name="pathContext">The context of the Path.</param>
-        /// <param name="value">The value to set.</param>
-        public void SetFromParentDataRowType(object objParent, string pathContext, object value)
-        {
-            if (string.IsNullOrEmpty(pathContext))
-            {
-                throw new ArgumentNullException(nameof(pathContext), TraceResources.ERR_INDEXER_PATH_CONTEXT_NULL);
-            }
-
-#region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
-#endregion
-
-            object parentObject = this.TryGetFromParentObject(objParent);
-            if (parentObject == null)
-            {
-                // need to throw an exception as we cannot process an array
-                // index on a null object
-                throw new NullIndexedReferenceException(pathContext);
-            }
-
-            DataRow dataRow = (DataRow)parentObject;
-
-            dataRow[pathContext] = value;
-        }
-#endif
 
         /// <summary>
         /// Get the value of this property from its parent that is an array type
@@ -498,52 +447,12 @@
             // return dictionary?[]
         }
 
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471
-        /// <summary>
-        /// Gets an object from the parent datarow type 
-        /// </summary>
-        /// <param name="objParent">The parent object</param>
-        /// <param name="pathContext">Used to determine where we are in the path tree.</param>
-        /// <returns>the object by path.</returns>
-        private object GetFromParentDataRowType(object objParent, string pathContext)
-        {
-            if (string.IsNullOrEmpty(pathContext))
-            {
-                throw new ArgumentNullException(nameof(pathContext), TraceResources.ERR_INDEXER_PATH_CONTEXT_NULL);
-            }
-
-#region Assertions
-            Indexed.DiagnosticTrace.Assert(objParent != null, TraceResources.ASSERT_INDEXER_GET_FROM_PARENT_TYPE_PARENT_OBJECT_NULL);
-#endregion
-
-            object parentObject = this.TryGetFromParentObject(objParent);
-            if (parentObject == null)
-            {
-                // we can assert that we are coalescing nulls because otherwise an exception
-                // would have been thrown
-                return null;
-            }
-
-            DataRow dataRow = (DataRow)parentObject;
-
-            // bubble exceptions;
-            return dataRow[pathContext];
-        }
-#endif
 
         private object TryGetFromParentObject(object objParent)
         {
             Indexed.DiagnosticTrace.Assert(objParent != null, $"{nameof(objParent)} is null");
 
             object result = this.getter.Invoke(objParent, null);
-
-            if (result == null)
-            {
-                if (!this.coalesceNulls)
-                {
-                    throw new NullReferenceException($"A null reference was encountered in the object tree, {this.coalesceNulls} is set to {false}.");
-                }
-            }
 
             return result;
         }

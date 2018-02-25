@@ -38,12 +38,22 @@ namespace Homework.FrontEnd
 
             app.UseStaticFiles();
 
+            // logging
+            app.Use(async (context, theTask) =>
+            {
+                context.TraceIdentifier = $"homework_{Guid.NewGuid().ToString()}";
+
+                await theTask();
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
         }
     }
 }

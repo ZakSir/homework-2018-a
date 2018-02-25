@@ -25,17 +25,7 @@
         /// <param name="context">The input object that will be used to get the data from.</param>
         /// <param name="pathContext">The string path requested by the index caller.</param>
         /// <returns>The value of the object</returns>
-        object Get(object context, string pathContext);
-
-        /// <summary>
-        /// Returns the value of the object represented by the indexed path given the contextual input object.
-        /// This method will return the object as a cast to the type specfied. Type mismatches will cause exceptions.
-        /// </summary>
-        /// <typeparam name="T">The type of the data.</typeparam>
-        /// <param name="context">The contextual input object.</param>
-        /// <param name="pathContext">The string path requested by the index caller.</param>
-        /// <returns>The value of the object.</returns>
-        T Get<T>(object context, string pathContext);
+        object Get(object context, string pathContext, bool forceCoalesceNulls = false);
 
         /// <summary>
         /// Returns the value of the object represnted by the indexed path given the contexual input object, with the stack containing references to the child accessors. 
@@ -46,7 +36,7 @@
         /// <param name="propertyIndexes">Stack of accessor objects that are used to pull values from within the tree.</param>
         /// <returns>The value of the object at PathContext.</returns>
         [Obsolete("Used internally, do not use.", false)]
-        object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes);
+        object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls = false);
 
         /// <summary>
         /// Returns the value of the object defined by this property by giving the value of the parent object, to access.
@@ -63,5 +53,11 @@
         /// <param name="pathContext">The string path requested by the index caller.</param>
         /// <param name="value">The value to set on this property</param>
         void Set(object context, string pathContext, object value);
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Homework.IIndexedProperty"/> coalesces nulls.
+        /// </summary>
+        /// <value><c>true</c> if coalesce nulls; otherwise, <c>false</c>.</value>
+        bool CoalesceNulls { get; set; }
     }
 }

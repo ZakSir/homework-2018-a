@@ -43,11 +43,6 @@
         /// The object is a Dictionary / Hashtable type and can be accessed as such
         /// </summary>
         /// <example>Can be accessed like "/a/b/c/ContosoCompanyLLC" where C is a Dictionary Property</example>
-        Dictionary = 2,
-
-        /// <summary>
-        /// The object can be accessed as a <see cref="System.Data.DataRow"/>
-        /// </summary>
-        DataRow = 3
+        Dictionary = 2  
     }
 }

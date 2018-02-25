@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Homework.ProblemA
 {
@@ -52,15 +54,13 @@ namespace Homework.ProblemA
             return stringhash;
         }
 
-        public ObjectDifferential GetDifferential<T1, T2>(T1 a, T2 b)
-            where T1 : class
-            where T2 : class
+        public ObjectDifferential GetDifferential(object a, object b)
         {
-            Indexed<T1> it1 = new Indexed<T1>(a);
-            Indexed<T2> it2 = new Indexed<T2>(b);
+            Indexed it1 = new Indexed(a);
+            Indexed it2 = new Indexed(b);
 
-            Type it1t = typeof(T1);
-            Type it2t = typeof(T2);
+            Type it1t = a.GetType();
+            Type it2t = b.GetType();
 
             bool indexMatch = it1t == it2t;
 
@@ -76,54 +76,169 @@ namespace Homework.ProblemA
 
             foreach (KeyValuePair<string, object> pair in it1Flat)
             {
-                string aval = null;
-                string bval = null;
+                object aval = null;
+                object bval = null;
 
-                if (pair.Value != null)
-                {
-                    aval = pair.Value.ToString();
-                }
+                aval = pair.Value;
 
                 if (it2Flat.TryGetValue(pair.Key, out object it2Value))
                 {
-                    if (it2Value != null)
+                    bval = it2Value;
+
+                    if(aval == null && bval == null){
+                        ObjectProperty op = new ObjectProperty()
+                        {
+                            PropertyName = pair.Key,
+                            Value = $"BOTH OBJECTS NULL"
+                        };
+
+                        matching.Add(op);
+
+                        it2SkipNames.Add(pair.Key);
+
+                        continue;
+                    }
+
+                    // one of the objects, but not both are null
+                    // last condition would have caught both
+                    if (aval == null || bval == null)
                     {
-                        bval = it2Value.ToString();
+                        // automatic mismatch - dont check equality
+                        ObjectPropertyPair opp = new ObjectPropertyPair()
+                        {
+                            PropertyName = pair.Key,
+                            IsUnderlyingTypeMatch = false,
+                            A = aval == null ? $"{nameof(aval)} == null" : aval.ToString(),
+                            B = bval == null ? $"{nameof(bval)} == null" : bval.ToString()
+                        };
+
+                        mismatching.Add(opp);
+                        it2SkipNames.Add(pair.Key);
+
+                        continue;
+                    }
+
+                    if(object.ReferenceEquals(aval, bval))
+                    {
+                        ObjectProperty op = new ObjectProperty()
+                        {
+                            PropertyName = pair.Key,
+                            Value = $"Same Object ('{aval.ToString()}')"
+                        };
+
+                        matching.Add(op);
+
+                        it2SkipNames.Add(pair.Key);
+
+                        continue;
+                    }
+
+                    // the key gets something back 
+                    Type o1type = pair.Value.GetType();
+                    Type o2type = it2Value.GetType();
+
+                    if (o1type != o2type)
+                    {
+                        // automatic mismatch - dont check equality
+                        ObjectPropertyPair opp = new ObjectPropertyPair()
+                        {
+                            PropertyName = pair.Key,
+                            IsUnderlyingTypeMatch = false,
+                            A = aval.ToString(),
+                            B = bval.ToString()
+                        };
+
+                        mismatching.Add(opp);
+                        it2SkipNames.Add(pair.Key);
+
+                        continue;
                     }
 
 
-                    if (!indexMatch)
-                    {
-                        // the key gets something back 
-                        Type o1type = pair.Value.GetType();
-                        Type o2type = it2Value.GetType();
 
-                        if (o1type != o2type)
+                    // we know the type is identical, so we can use just o1type
+                    // we have to check equality
+                    if(o1type != typeof(string) && // special case as a System.String is actually an Array of char (woo c)
+                       typeof(IEnumerable).IsAssignableFrom(o1type))
+                    {
+                        bool isEqual = true;
+
+                        // we know we are working with a collection
+
+                        Array arrayOfA = (Array)aval;
+                        Array arrayOfB = (Array)bval;
+
+
+                        if(arrayOfA.Length != arrayOfB.Length)
                         {
-                            // automatic mismatch - dont check equality
+                            // the arrays are different lengths, 
+                            // which by default means the value of the collection will be different.
+
+                            isEqual = false;
+                        }
+                        else
+                        {
+                            bool foundFault = false;
+
+                            // arrays are the same length
+                            int length = arrayOfA.Length;
+
+                            for (int i = 0; i < length; i++)
+                            {
+                                object internalAValue = arrayOfA.GetValue(i);
+                                object internalBValue = arrayOfB.GetValue(i);
+
+                                if(internalAValue != internalBValue)
+                                {
+                                    foundFault = true;
+                                    break;
+                                }
+                            }
+
+                            if(foundFault){
+                                isEqual = false;
+                            }
+                            else 
+                            {
+                                isEqual = true;
+                            }
+                        }
+
+                        if(isEqual)
+                        {
+                            ObjectProperty op = new ObjectProperty()
+                            {
+                                PropertyName = pair.Key,
+                                Value = JsonConvert.SerializeObject(aval)
+                            };
+
+                            matching.Add(op);
+                        }
+                        else
+                        {
                             ObjectPropertyPair opp = new ObjectPropertyPair()
                             {
                                 PropertyName = pair.Key,
-                                IsUnderlyingTypeMatch = false,
-                                A = aval,
-                                B = bval
+                                IsUnderlyingTypeMatch = true,
+                                A = JsonConvert.SerializeObject(aval),
+                                B = JsonConvert.SerializeObject(bval)
                             };
 
                             mismatching.Add(opp);
-                            it2SkipNames.Add(pair.Key);
-
-                            continue;
                         }
+
+                        continue;
                     }
 
-                    if (aval != bval)
+                    // the objects are the same type, try to use the default equality operator to invoke equality operations
+                    if (!aval.Equals(bval))
                     {
                         ObjectPropertyPair opp = new ObjectPropertyPair()
                         {
                             PropertyName = pair.Key,
                             IsUnderlyingTypeMatch = true,
-                            A = aval,
-                            B = bval
+                            A = aval.ToString(),
+                            B = bval.ToString()
                         };
 
                         mismatching.Add(opp);
@@ -133,7 +248,7 @@ namespace Homework.ProblemA
                         ObjectProperty op = new ObjectProperty()
                         {
                             PropertyName = pair.Key,
-                            Value = aval
+                            Value = aval.ToString()
                         };
 
                         matching.Add(op);
@@ -145,7 +260,7 @@ namespace Homework.ProblemA
                     ObjectProperty op = new ObjectProperty()
                     {
                         PropertyName = pair.Key,
-                        Value = aval
+                        Value = aval == null ? "Value in A is NULL" : aval.ToString()
                     };
 
                     onlyInA.Add(op);
@@ -166,6 +281,10 @@ namespace Homework.ProblemA
                 if (pair.Value != null)
                 {
                     bval = pair.Value.ToString();
+                }
+                else
+                {
+                    bval = "Value in B is Null";
                 }
 
                 // property does not exist in b.
@@ -192,15 +311,13 @@ namespace Homework.ProblemA
             return od;
         }
 
-        public IEnumerable<string> GetMatchingPropertyNames<T1, T2>(T1 a, T2 b)
-            where T1 : class
-            where T2 : class
+        public IEnumerable<string> GetMatchingPropertyNames(object a, object b)
         {
-            Indexed<T1> it1 = new Indexed<T1>(a);
-            Indexed<T2> it2 = new Indexed<T2>(b);
+            Indexed it1 = new Indexed(a);
+            Indexed it2 = new Indexed(b);
 
-            Type it1t = typeof(T1);
-            Type it2t = typeof(T2);
+            Type it1t = a.GetType();
+            Type it2t = b.GetType();
 
             bool indexMatch = it1t == it2t;
 

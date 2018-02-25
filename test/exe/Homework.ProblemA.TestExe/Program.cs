@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Homework.ProblemA.TestExe
 {
@@ -7,6 +9,7 @@ namespace Homework.ProblemA.TestExe
     {
         static void Main(string[] args)
         {
+            
             ModelService ms = new ModelService();
 
             TestClassFoo foo = new TestClassFoo()
@@ -26,6 +29,9 @@ namespace Homework.ProblemA.TestExe
                 Foo = "I am foo an I am also a string"
             };
 
+            object[] a = new object[] { foo, bar, fooBar };
+            object[] b = new object[] { foo, bar, fooBar };
+
             ObjectDifferential foo_bardiff = ms.GetDifferential(foo, bar);
             ObjectDifferential foo_foobarDiff = ms.GetDifferential(foo, fooBar);
 
@@ -35,6 +41,26 @@ namespace Homework.ProblemA.TestExe
             Console.WriteLine(("done"));
 
         }
+
+        static string SerializeForEqualityCheck(object o)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+
+            byte[] wholeStream;
+            using(MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, o);
+
+                ms.Position = 0;
+
+                wholeStream = ms.ToArray();
+            }
+
+            string result = Convert.ToBase64String(wholeStream);
+
+            return result;
+        }
+
 
         static void WriteDifference(ObjectDifferential od, string differentialName)
         {

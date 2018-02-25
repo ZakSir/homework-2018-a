@@ -12,14 +12,19 @@
     public class NullPropertyIndexer : IIndexedProperty
     {
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Homework.NullPropertyIndexer"/> coalesces nulls. Does nothing in this context.
+        /// </summary>
+        /// <value><c>true</c> if coalesce nulls; otherwise, <c>false</c>.</value>
+        public bool CoalesceNulls { get; set; }
+
+        /// <summary>
         /// Gets the value at this location in the property tree
         /// </summary>
         /// <param name="context">Root object to traverse</param>
         /// <param name="pathContext">Used to determine where we are in the path tree.</param>
         /// <returns>The value of the object.</returns>
-        object IIndexedProperty.Get(object context, string pathContext)
+        object IIndexedProperty.Get(object context, string pathContext, bool forceCoalesceNulls = false)
         {
-
             return null;
         }
 
@@ -30,21 +35,9 @@
         /// <param name="pathContext">Used to determine where we are in the path tree.</param>
         /// <param name="propertyIndexes">The stack of property indexes</param>
         /// <returns>The boxed object contained at this location.</returns>
-        object IIndexedProperty.Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes)
+        object IIndexedProperty.Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls = false)
         {
             return null;
-        }
-
-        /// <summary>
-        /// Gets the value at this location in the property tree
-        /// </summary>
-        /// <typeparam name="T">The type of the property</typeparam>
-        /// <param name="context">Root object to traverse</param>
-        /// <param name="pathContext">Used to determine where we are in the path tree.</param>
-        /// <returns>The value of the object.</returns>
-        T IIndexedProperty.Get<T>(object context, string pathContext)
-        {
-            return default(T);
         }
 
         /// <summary>

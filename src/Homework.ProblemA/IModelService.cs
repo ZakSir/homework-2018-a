@@ -8,13 +8,9 @@ namespace Homework.ProblemA
 {
     public interface IModelService
     {
-        ObjectDifferential GetDifferential<T1, T2>(T1 a, T2 b)
-            where T1 : class
-            where T2 : class;
+        ObjectDifferential GetDifferential(object a, object b);
 
-        IEnumerable<string> GetMatchingPropertyNames<T1, T2>(T1 a, T2 b)
-            where T1 : class
-            where T2 : class;
+        IEnumerable<string> GetMatchingPropertyNames(object a, object b);
 
         string GetCryptographicHashCode(object obj, string hashAlgorithmName);
     }

@@ -8,6 +8,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text;
+    using System.Collections;
 
 
     /// <summary>
@@ -17,8 +18,7 @@
     /// Supports IDictionary Properties
     /// Supports DataRow Properties
     /// </summary>
-    /// <typeparam name="T">The type to Index.</typeparam>
-    public class Indexed<T> : IEquatable<Indexed<T>>
+    public partial class Indexed : IReadOnlyDictionary<string, object>
     {
         /// <summary>
         /// Forward slash
@@ -36,29 +36,19 @@
         private static readonly char[] PathSeperatorChars = new char[] { FSLASH };
 
         /// <summary>
-        /// Cached type object.
+        /// The map cache.
         /// </summary>
-        private static readonly Type IndexedType;
+        private static readonly Dictionary<Type, IndexCache> IndexCache = new Dictionary<Type, IndexCache>();
 
         /// <summary>
-        /// Accessors by path, this is the core of the indexer.
+        /// The caching lock objects.
         /// </summary>
-        private static readonly Dictionary<string, IIndexedProperty> Accessors;
+        private static readonly Dictionary<Type, object> CachingLockObjects = new Dictionary<Type, object>();
 
         /// <summary>
-        /// Specifies if the index has been built for this type;
+        /// The type of the object.
         /// </summary>
-        private static bool indexBuilt;
-
-        /// <summary>
-        /// The maximum depth that we will index properties
-        /// </summary>
-        private static int maxStackDepth;
-
-        /// <summary>
-        /// The performance mode of the indexer
-        /// </summary>
-        private static IndexerPerormanceMode performanceMode;
+        private readonly Type objectType;
 
         /// <summary>
         /// Unique Id to describe the object. Used mostly for tracing.
@@ -68,16 +58,12 @@
         /// <summary>
         /// The Origin Value
         /// </summary>
-        private readonly T value;
+        private readonly object value;
 
         /// <summary>
-        /// Initializes static members of the <see cref="Indexed{T}"/> class. 
+        /// If null properties should be returned or throw exceptions.
         /// </summary>
-        static Indexed()
-        {
-            IndexedType = typeof(T);
-            Accessors = new Dictionary<string, IIndexedProperty>();
-        }
+        private bool coalesceNulls;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Indexed{T}"/> class. 
@@ -88,24 +74,27 @@
         /// <param name="maxStackDepth">The maximum stack depth allowed</param>
         /// <param name="performanceMode">The performance mode of the indexer. </param>
         public Indexed(
-            T obj,
+            object obj,
+            bool coalesceNulls = false,
             int maxStackDepth = 10,
             IndexerPerormanceMode performanceMode = IndexerPerormanceMode.NoEnhancement)
         {
-            CheckBuildIndex(maxStackDepth, performanceMode);
-
-            if (obj == null)
-            {
+            if(obj == null){
                 throw new ArgumentNullException(nameof(obj));
             }
 
+            this.objectType = obj.GetType();
+
+            CheckBuildIndex(this.objectType, coalesceNulls, maxStackDepth, performanceMode);
+
             this.value = obj;
+            this.coalesceNulls = coalesceNulls;
         }
 
         /// <summary>
         /// Gets the base value of this indexed object.
         /// </summary>
-        public T Value
+        public object Value
         {
             get
             {
@@ -113,6 +102,40 @@
             }
         }
 
+        /// <summary>
+        /// Gets the keys for this index.
+        /// </summary>
+        /// <value>The keys.</value>
+        public IEnumerable<string> Keys => this.Accessors.Keys;
+
+        /// <summary>
+        /// Gets the values in flat format for this object. Dangerous to use without a key map. 
+        /// </summary>
+        /// <value>The values.</value>
+        public IEnumerable<object> Values => this.ToFlatDictionary().Values;
+
+        /// <summary>
+        /// Gets the count of accessors in this index.
+        /// </summary>
+        /// <value>The count.</value>
+        public int Count => this.Accessors.Count;
+
+        /// <summary>
+        /// Internal handle to the Accessor cache for this object type.
+        /// </summary>
+        /// <value>The accessors.</value>
+        protected Dictionary<string, IIndexedProperty> Accessors {
+            get{
+                /*
+                 * If the object constructed and did not throw exceptions,
+                 * that means that the cache for this object is built
+                 * and we can assume that the object will be in the
+                 * dictionary as we never purge the type cache.
+                 */
+
+                return Indexed.IndexCache[this.objectType].Accessors;
+            }
+        }
 
         /// <summary>
         /// Retrieves a value at the specified index.
@@ -129,7 +152,7 @@
                 }
 
                 string remainder;
-                return GetAccessor(index, out remainder).Get(this.value, remainder);
+                return this.GetAccessor(index, out remainder).Get(this.value, remainder);
             }
 
             set
@@ -140,27 +163,9 @@
                 }
 
                 string remainder;
-                IIndexedProperty accessor = GetAccessor(index, out remainder);
+                IIndexedProperty accessor = this.GetAccessor(index, out remainder);
                 accessor.Set(this.value, remainder, value);
             }
-        }
-
-        /// <summary>
-        /// Converts this object to its base value. Returns the value stored in this.value
-        /// </summary>
-        /// <param name="obj">The object to be cast</param>
-        public static explicit operator T(Indexed<T> obj)
-        {
-            return obj.value;
-        }
-
-        /// <summary>
-        /// Converts this object to an Indexed version of this object by creating a new instance of the class.
-        /// </summary>
-        /// <param name="obj">The object to be cast</param>
-        public static explicit operator Indexed<T>(T obj)
-        {
-            return new Indexed<T>(obj);
         }
 
         /// <summary>
@@ -169,7 +174,7 @@
         /// <param name="a">The first object</param>
         /// <param name="b">The second object</param>
         /// <returns>True of the the underlying objects are equal</returns>
-        public static bool operator ==(Indexed<T> a, Indexed<T> b)
+        public static bool operator ==(Indexed a, Indexed b)
         {
             // If both are null, or both are same instance, return true.
             if (object.ReferenceEquals(a, b))
@@ -179,6 +184,12 @@
 
             // If one is null, but not both, return false.
             if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
+            // check type equality first as its faster
+            if(a.objectType != b.objectType)
             {
                 return false;
             }
@@ -192,7 +203,7 @@
         /// <param name="a">The first object</param>
         /// <param name="b">The second object</param>
         /// <returns>True of the the underlying objects are not equal</returns>
-        public static bool operator !=(Indexed<T> a, Indexed<T> b)
+        public static bool operator !=(Indexed a, Indexed b)
         {
             // If both are null, or both are same instance, return true.
             if (object.ReferenceEquals(a, b))
@@ -206,6 +217,12 @@
                 return true;
             }
 
+            // check type equality first as its faster
+            if (a.objectType == b.objectType)
+            {
+                return false;
+            }
+
             return !a.value.Equals(b.Value);
         }
 
@@ -216,11 +233,14 @@
         /// <returns>A dictionary representing the index of the object.</returns>
         public Dictionary<string, object> ToFlatDictionary()
         {
+            this.coalesceNulls = true;
             Dictionary<string, object> result = new Dictionary<string, object>();
 
-            foreach (KeyValuePair<string, IIndexedProperty> row in Indexed<T>.Accessors)
+            foreach (KeyValuePair<string, IIndexedProperty> row in this.Accessors)
             {
-                object internalValue = row.Value.Get(this.value, null);
+                    row.Value.CoalesceNulls = true;
+                    object internalValue = row.Value.Get(this.value, null, true);
+
 
                 result[row.Key] = internalValue;
             }
@@ -242,7 +262,7 @@
         /// </summary>
         /// <param name="other">The other type to test against. </param>
         /// <returns>The result of the equality test.</returns>
-        public bool Equals(Indexed<T> other)
+        public bool Equals(Indexed other)
         {
             return this.value.Equals(other.value);
         }
@@ -264,9 +284,9 @@
                 return false;
             }
 
-            if (obj is Indexed<T>)
+            if (obj is Indexed)
             {
-                Indexed<T> inx = obj as Indexed<T>;
+                Indexed inx = obj as Indexed;
 
                 /*
                  * Non recursive call, this will call into 
@@ -276,7 +296,8 @@
                 return this.Equals(inx); // non recursive call 
             }
 
-            return base.Equals(obj);
+            // obj is not indexed.
+            return false;
         }
 
         /// <summary>
@@ -284,26 +305,33 @@
         /// </summary>
         /// <param name="maxStackDepth">The maximum property depth to index.</param>
         /// <param name="performanceMode">The performance mode of the indexer. Controls the types of properties indexed.</param>
-        private static void CheckBuildIndex(int maxStackDepth, IndexerPerormanceMode performanceMode)
+        private static void CheckBuildIndex(Type objectType, bool coalesceNulls, int maxStackDepth, IndexerPerormanceMode performanceMode)
         {
-            if (
-                !indexBuilt
-                || Indexed<T>.maxStackDepth != maxStackDepth
-                || Indexed<T>.performanceMode != performanceMode)
+
+            if(!Indexed.IndexCache.ContainsKey(objectType))
             {
-                Indexed<T>.maxStackDepth = maxStackDepth;
-                Indexed<T>.performanceMode = performanceMode;
+                lock (GetOrCreateLockObject(objectType))
+                {
+                    if (!Indexed.IndexCache.ContainsKey(objectType))
+                    {
+                        IndexCache ic = new IndexCache(objectType);
+                        ic.MaxStackDepth = maxStackDepth;
+                        ic.PerformanceMode = performanceMode;
 
-                // if the index has not been built
-                // or the stack depth requested does not match the previous
-                // value, we will rebuild the index
-                BuildIndex(
-                    IndexedType,
-                    new NullPropertyIndexer(),
-                    STARTPATH,
-                    new LinkedList<PropertyInfo>());
+                        // if the index has not been built
+                        // or the stack depth requested does not match the previous
+                        // value, we will rebuild the index
+                        BuildIndex(
+                            objectType,
+                            ic,
+                            coalesceNulls,
+                            new NullPropertyIndexer(),
+                            STARTPATH,
+                            new LinkedList<PropertyInfo>());
 
-                indexBuilt = true;
+                        Indexed.IndexCache.Add(objectType, ic);
+                    }
+                }
             }
         }
 
@@ -313,7 +341,7 @@
         /// <param name="index">The index path to get an accessor for.</param>
         /// <param name="remainder">The remainder of the path left over after the accessor is found.</param>
         /// <returns>The located accessor</returns>
-        private static IIndexedProperty GetAccessor(string index, out string remainder)
+        private IIndexedProperty GetAccessor(string index, out string remainder)
         {
             /* 
              * This method will attempt first to locate the 
@@ -344,7 +372,7 @@
              */
 
             IIndexedProperty accessor;
-            if (!Accessors.TryGetValue(index, out accessor))
+            if (!this.Accessors.TryGetValue(index, out accessor))
             {
                 // the property was not found try and see if the property is indexible
                 string[] parts = index.Split(PathSeperatorChars, StringSplitOptions.RemoveEmptyEntries);
@@ -420,6 +448,8 @@
         /// <param name="typeStack">The type stack, used for redundancy checking.</param>
         private static void BuildIndex(
             Type currentType,
+            IndexCache cacheObject,
+            bool coalesceNulls,
             IIndexedProperty parentPropertyIndexer,
             string currentPath,
             LinkedList<PropertyInfo> typeStack)
@@ -443,7 +473,7 @@
                 Type indexPropType = indexPropGenericTypeDef.MakeGenericType(new Type[] { currentType, currentTypeProperty.PropertyType });
 
                 // create the object using the activator.
-                object activatedAccessor = Activator.CreateInstance(indexPropType, parentPropertyIndexer, currentTypeProperty, currentPath, false);
+                object activatedAccessor = Activator.CreateInstance(indexPropType, parentPropertyIndexer, currentTypeProperty, currentPath, coalesceNulls);
 
                 // cast it as the interface (This should not fail)
                 IIndexedProperty accessor = (IIndexedProperty)activatedAccessor;
@@ -451,9 +481,9 @@
                 Indexed.DiagnosticTrace.TraceInformation($"property {currentPath}{currentTypeProperty.Name} has completed accessor building.");
 
                 // add this accessor to the cache at the correct path
-                Accessors[$"{currentPath}{currentTypeProperty.Name}"] = accessor;
+                cacheObject.Accessors[$"{currentPath}{currentTypeProperty.Name}"] = accessor;
 
-                if (performanceMode == IndexerPerormanceMode.CommonProperties)
+                if (cacheObject.PerformanceMode == IndexerPerormanceMode.CommonProperties)
                 {
                     if (currentTypeProperty.PropertyType == typeof(System.Data.DataRow))
                     {
@@ -501,7 +531,7 @@
                     }
                 }
 
-                if (typeStack.Count > maxStackDepth)
+                if (typeStack.Count > cacheObject.MaxStackDepth)
                 {
                     Indexed.DiagnosticTrace.TraceInformation($"Skipping subindexing on {currentPath}{currentTypeProperty.Name} as we have reached the maximum depth allowed to index.");
 
@@ -514,7 +544,7 @@
 
                 Indexed.DiagnosticTrace.TraceInformation($"starting subindexing on {currentPath}{currentTypeProperty.Name}");
 
-                BuildIndex(currentTypeProperty.PropertyType, accessor, $"{currentPath}{currentTypeProperty.Name}{FSLASH}", typeStack);
+                BuildIndex(currentTypeProperty.PropertyType, cacheObject, coalesceNulls, accessor, $"{currentPath}{currentTypeProperty.Name}{FSLASH}", typeStack);
 
                 typeStack.RemoveFirst();
             }
@@ -580,6 +610,48 @@
             }
 
             return false;
+        }
+
+        public bool ContainsKey(string key)
+        {
+            return Accessors.ContainsKey(key);
+        }
+
+        public bool TryGetValue(string key, out object value)
+        {
+            bool result = Accessors.ContainsKey(key);
+
+            if (result)
+            {
+                value = this[key];
+            }
+            else
+            {
+                value = null;
+            }
+
+            return result;
+        }
+
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return this.ToFlatDictionary().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        private static object GetOrCreateLockObject(Type t)
+        {
+            if(!CachingLockObjects.TryGetValue(t, out object lockObject))
+            {
+                lockObject = new object();
+                CachingLockObjects.Add(t, lockObject);
+            }
+
+            return lockObject;
         }
     }
 }

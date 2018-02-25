@@ -6,12 +6,22 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\api\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Homework.ProblemA\Homework.ProblemA.csproj" />
+    <ProjectReference Include="..\Common\Homework.Common.csproj" />
+    <ProjectReference Include="..\Homework.Reflection\Homework.Reflection.csproj" />
+    <ProjectReference Include="..\Homework.Resources\Homework.Resources.csproj" />
+  </ItemGroup>
     <Target Name="MyPreCompileTarget" BeforeTargets="Build">
        <Exec Command="gulp build -LLLL" />
     </Target>

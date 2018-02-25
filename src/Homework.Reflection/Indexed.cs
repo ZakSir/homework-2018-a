@@ -10,7 +10,7 @@ namespace Homework
 
     using static Homework.Resources.Diagnostics;
 
-    public class Indexed
+    public partial class Indexed
     {
         /// <summary>
         /// Lock object for the init of the diagnostic trace.

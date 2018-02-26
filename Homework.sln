@@ -3,31 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemA", "src\Homework.ProblemA\Homework.ProblemA.csproj", "{7C7EDA03-610F-42DE-BCB3-F933DFFFA62E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.ProblemA", "src\Homework.ProblemA\Homework.ProblemA.csproj", "{7C7EDA03-610F-42DE-BCB3-F933DFFFA62E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryItems", "RepositoryItems", "{B9AA4190-2EE0-4C29-A4AE-FE88B730D137}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		common.props = common.props
+		common_prod.props = common_prod.props
+		common_test.props = common_test.props
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{79FA5DBE-74A3-4B88-8151-6DBC185F83A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemA.Tests", "test\unit\Homework.ProblemA.Tests\Homework.ProblemA.Tests.csproj", "{52CD6504-1DAF-4C9D-9D4E-16594DDD7804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.ProblemA.Tests", "test\unit\Homework.ProblemA.Tests\Homework.ProblemA.Tests.csproj", "{52CD6504-1DAF-4C9D-9D4E-16594DDD7804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Reflection", "src\Homework.Reflection\Homework.Reflection.csproj", "{64B16287-2669-40A6-A1FC-D2EB76C50FF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.Reflection", "src\Homework.Reflection\Homework.Reflection.csproj", "{64B16287-2669-40A6-A1FC-D2EB76C50FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Resources", "src\Homework.Resources\Homework.Resources.csproj", "{369291BC-DF15-4A45-A351-DFD545733A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.Resources", "src\Homework.Resources\Homework.Resources.csproj", "{369291BC-DF15-4A45-A351-DFD545733A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.Common", "src\Common\Homework.Common.csproj", "{DA87F090-8D62-4634-8597-C47B2E7C3919}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.Common", "src\Common\Homework.Common.csproj", "{DA87F090-8D62-4634-8597-C47B2E7C3919}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exe", "Exe", "{B2FEFE85-9CFB-4F30-A8F1-739B3693D629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemA.TestExe", "test\exe\Homework.ProblemA.TestExe\Homework.ProblemA.TestExe.csproj", "{139EE9E2-0382-48D6-9B64-F1E2590A5D33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.ProblemA.TestExe", "test\exe\Homework.ProblemA.TestExe\Homework.ProblemA.TestExe.csproj", "{139EE9E2-0382-48D6-9B64-F1E2590A5D33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.FrontEnd", "src\Homework.FrontEnd\Homework.FrontEnd.csproj", "{4A847FFB-F839-42B0-8E49-5DBD956D84A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.FrontEnd", "src\Homework.FrontEnd\Homework.FrontEnd.csproj", "{4A847FFB-F839-42B0-8E49-5DBD956D84A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAutoRestEXE", "test\exe\TestAutoRestEXE\TestAutoRestEXE.csproj", "{02C92BAE-4665-46CE-A039-970E6A6A53F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAutoRestEXE", "test\exe\TestAutoRestEXE\TestAutoRestEXE.csproj", "{02C92BAE-4665-46CE-A039-970E6A6A53F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

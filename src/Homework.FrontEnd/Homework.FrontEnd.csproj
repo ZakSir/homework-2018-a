@@ -4,9 +4,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\netcoreapp2.0\Homework.FrontEnd.xml</DocumentationFile>
-  </PropertyGroup>
+  <!-- Documenatation File -->
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Homework.FrontEnd.xml</DocumentationFile>
+  </PropertyGroup>  
+  
   <Import Project="..\..\common_prod.props" />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />

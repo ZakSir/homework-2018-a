@@ -24,6 +24,9 @@ namespace Homework.FrontEnd
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            
+            Telemetry.Client.TrackTrace("added mvc good night ");
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
@@ -40,6 +43,8 @@ namespace Homework.FrontEnd
                 var xmlPath = Path.Combine(basePath, "Homework.FrontEnd.xml");
                 c.IncludeXmlComments(xmlPath);
             });
+            
+             Telemetry.Client.TrackTrace("added swagger good night ");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,15 +76,21 @@ namespace Homework.FrontEnd
                     throw ex;
                 }
             });
+            
+           Telemetry.Client.TrackTrace("using logs "); 
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
+            
+            Telemetry.Client.TrackTrace("Using swagger");
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Trupanion Homework");
             });
+            
+            Telemetry.Client.TrackTrace("using swagger ui ");
 
             app.UseMvc(routes =>
             {
@@ -87,6 +98,8 @@ namespace Homework.FrontEnd
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            
+            Telemetry.Client.TrackTrace("using mvc ");
 
 
         }

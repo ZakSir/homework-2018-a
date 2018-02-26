@@ -23,6 +23,7 @@ namespace Homework.FrontEnd.Controllers.api
 
         protected static Homework.ProblemA.ModelService ModelService {
             get{
+                Telemetry.Client.TrackTrace();
                 Init();
 
                 return modelService;

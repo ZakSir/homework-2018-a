@@ -136,10 +136,16 @@
         /// Gets or sets a value indicating whether this <see cref="T:Homework.IndexedProperty`2"/> coalesces nulls.
         /// </summary>
         /// <value><c>true</c> if coalesce nulls; otherwise, <c>false</c>.</value>
-        public bool CoalesceNulls {
+        public bool CoalesceNulls
+        {
             get => this.coalesceNulls;
             set => this.coalesceNulls = value;
         }
+
+        /// <summary>
+        /// Gets the path that this accessor represents.
+        /// </summary>
+        public string Path => this.path;
 
         /// <summary>
         /// Gets a value using the current stack of property indexers. 
@@ -150,12 +156,14 @@
         /// <returns>The boxed object contained at this location.</returns>
         public object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls = false)
         {
+            Indexed.DiagnosticTrace.TraceInformation($"Start Get");
+
             propertyIndexes.Push(this);
 
             if (this.hasParent)
             {
 #pragma warning disable CS0618 // Type or member is obsolete
-                object o = this.parent.Get(context, pathContext, propertyIndexes);
+                object o = this.parent.Get(context, pathContext, propertyIndexes, forceCoalesceNulls);
 #pragma warning restore CS0618 // Type or member is obsolete
 
                 return o;
@@ -167,13 +175,25 @@
                 IIndexedProperty accessor = null;
                 while (propertyIndexes.Count > 0)
                 {
+                    Indexed.DiagnosticTrace.TraceInformation($"Property Stack Depth: {propertyIndexes.Count }, result == {result}");
+
                     accessor = propertyIndexes.Pop();
+
+                    Indexed.DiagnosticTrace.TraceInformation($"Accessor for: {accessor.Path} this is {this.path}");
+
                     result = accessor.GetFromParentType(result, pathContext);
 
                     if (result == null)
                     {
+                        Indexed.DiagnosticTrace.TraceInformation($"result is null @ Stack depth {propertyIndexes.Count }");
+
                         if (forceCoalesceNulls || this.coalesceNulls)
                         {
+                            if (propertyIndexes.Count > 1)
+                            {
+                                return DBNull.Value;
+                            }
+
                             // we cant go any father, but we can give a null and no exceptions
                             return null;
                         }
@@ -182,6 +202,8 @@
                             throw new NullIndexedReferenceException(this.path);
                         }
                     }
+
+                    Indexed.DiagnosticTrace.TraceInformation($"result is {result.GetType().FullName}");
                 }
 
                 return result;
@@ -195,7 +217,7 @@
         /// <param name="pathContext">Used to determine where we are in the path tree.</param>
         /// <param name="forceCoalesceNulls">If set to true will overwrite the local coalesce nulls.</param>
         /// <returns>The value of the object.</returns>
-        object IIndexedProperty.Get(object context, string pathContext, bool forceCoalesceNulls = false)
+        object IIndexedProperty.Get(object context, string pathContext, bool forceCoalesceNulls)
         {
             object o = this.Get(context, pathContext, new Stack<IIndexedProperty>(), forceCoalesceNulls);
 
@@ -253,7 +275,7 @@
             if (this.hasParent)
             {
 #pragma warning disable CS0618 // Type or member is obsolete <- Internal call used to discourage external calls
-                parentValue = this.parent.Get(context, string.Empty, new Stack<IIndexedProperty>());
+                parentValue = this.parent.Get(context, string.Empty, new Stack<IIndexedProperty>(), false);
 #pragma warning restore CS0618 // Type or member is obsolete
             }
             else
@@ -382,9 +404,9 @@
                 throw new ArgumentNullException(nameof(pathContext), "The incoming path context is null");
             }
 
-#region Assertions
+            #region Assertions
             Indexed.DiagnosticTrace.Assert(objParent != null, "The parent Object is null");
-#endregion
+            #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
             if (parentObject == null)
@@ -416,9 +438,9 @@
                 throw new ArgumentNullException(nameof(pathContext));
             }
 
-#region Assertions
+            #region Assertions
             Indexed.DiagnosticTrace.Assert(objParent != null, "The parent object is null");
-#endregion
+            #endregion
 
             object parentObject = this.TryGetFromParentObject(objParent);
             if (parentObject == null)
@@ -447,14 +469,20 @@
             // return dictionary?[]
         }
 
-
         private object TryGetFromParentObject(object objParent)
         {
             Indexed.DiagnosticTrace.Assert(objParent != null, $"{nameof(objParent)} is null");
 
-            object result = this.getter.Invoke(objParent, null);
+            if (objParent == null)
+            {
+                return DBNull.Value;
+            }
+            else
+            {
+                object result = this.getter.Invoke(objParent, null);
 
-            return result;
+                return result;
+            }
         }
     }
 }

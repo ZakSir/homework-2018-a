@@ -18,6 +18,11 @@
         public bool CoalesceNulls { get; set; }
 
         /// <summary>
+        /// Gets the path that this property indexer represents.
+        /// </summary>
+        public string Path => "NULL PROPERTY INDEXER";
+
+        /// <summary>
         /// Gets the value at this location in the property tree
         /// </summary>
         /// <param name="context">Root object to traverse</param>

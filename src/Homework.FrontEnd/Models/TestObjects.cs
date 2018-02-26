@@ -296,9 +296,9 @@ namespace Homework.FrontEnd.Models
 
     public class Mammal : Vertibrate
     {
-        public Mammal BirthMother { get; set; }
+        public virtual Mammal BirthMother { get; set; }
 
-        public Mammal BirthFather { get; set; }
+        public virtual Mammal BirthFather { get; set; }
     }
 
     public class Primate : Mammal
@@ -331,6 +331,10 @@ namespace Homework.FrontEnd.Models
         public bool IsInsured { get; set; }
         public virtual string Breed { get; set; }
         public IEnumerable<Human> Owners { get; set; }
+
+        public new Cat BirthMother { get; set; }
+
+        public new Cat BirthFather { get; set; }
     }
 
     public class Dog : Mammal, IPet {
@@ -340,6 +344,10 @@ namespace Homework.FrontEnd.Models
         public IEnumerable<Human> Owners { get; set; }
         public bool IsServiceAnimal { get; set; }
         public string Diet { get; set; }
+
+        public new Dog BirthMother { get; set; }
+
+        public new Dog BirthFather { get; set; }
     }
 
 

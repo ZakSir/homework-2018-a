@@ -79,7 +79,8 @@
             int maxStackDepth = 10,
             IndexerPerormanceMode performanceMode = IndexerPerormanceMode.NoEnhancement)
         {
-            if(obj == null){
+            if (obj == null)
+            {
                 throw new ArgumentNullException(nameof(obj));
             }
 
@@ -124,8 +125,10 @@
         /// Internal handle to the Accessor cache for this object type.
         /// </summary>
         /// <value>The accessors.</value>
-        protected Dictionary<string, IIndexedProperty> Accessors {
-            get{
+        protected Dictionary<string, IIndexedProperty> Accessors
+        {
+            get
+            {
                 /*
                  * If the object constructed and did not throw exceptions,
                  * that means that the cache for this object is built
@@ -152,7 +155,9 @@
                 }
 
                 string remainder;
-                return this.GetAccessor(index, out remainder).Get(this.value, remainder);
+                object result = this.GetAccessor(index, out remainder).Get(this.value, remainder);
+
+                return result == DBNull.Value ? null : result;
             }
 
             set
@@ -189,7 +194,7 @@
             }
 
             // check type equality first as its faster
-            if(a.objectType != b.objectType)
+            if (a.objectType != b.objectType)
             {
                 return false;
             }
@@ -238,11 +243,18 @@
 
             foreach (KeyValuePair<string, IIndexedProperty> row in this.Accessors)
             {
-                    row.Value.CoalesceNulls = true;
-                    object internalValue = row.Value.Get(this.value, null, true);
+                row.Value.CoalesceNulls = true;
+                DiagnosticTrace.TraceInformation($"Getting value of {row.Key} from outer");
+                object internalValue = row.Value.Get(this.value, null, true);
 
-
-                result[row.Key] = internalValue;
+                if (internalValue != DBNull.Value)
+                {
+                    result[row.Key] = internalValue == DBNull.Value ? null : internalValue;
+                }
+                else
+                {
+                    DiagnosticTrace.TraceInformation($"Skipping {row.Key} as it is returned as db null, a parent is probably null");
+                }
             }
 
             return result;
@@ -308,7 +320,7 @@
         private static void CheckBuildIndex(Type objectType, bool coalesceNulls, int maxStackDepth, IndexerPerormanceMode performanceMode)
         {
 
-            if(!Indexed.IndexCache.ContainsKey(objectType))
+            if (!Indexed.IndexCache.ContainsKey(objectType))
             {
                 lock (GetOrCreateLockObject(objectType))
                 {
@@ -489,7 +501,6 @@
                     {
                         // we only will need the value index
                         continue;
-
                     }
                 }
 
@@ -645,7 +656,7 @@
 
         private static object GetOrCreateLockObject(Type t)
         {
-            if(!CachingLockObjects.TryGetValue(t, out object lockObject))
+            if (!CachingLockObjects.TryGetValue(t, out object lockObject))
             {
                 lockObject = new object();
                 CachingLockObjects.Add(t, lockObject);

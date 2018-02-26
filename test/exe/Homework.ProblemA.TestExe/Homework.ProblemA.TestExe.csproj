@@ -12,6 +12,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Homework.FrontEnd\Homework.FrontEnd.csproj" />
     <ProjectReference Include="..\..\..\src\Homework.ProblemA\Homework.ProblemA.csproj" />
     <ProjectReference Include="..\..\..\src\Common\Homework.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Homework.Reflection\Homework.Reflection.csproj" />

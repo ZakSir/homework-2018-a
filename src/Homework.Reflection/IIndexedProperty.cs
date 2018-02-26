@@ -12,6 +12,11 @@
     public interface IIndexedProperty
     {
         /// <summary>
+        /// Gets the path that this accessor represents.
+        /// </summary>
+        string Path { get; }
+
+        /// <summary>
         /// Returns the value of the object defined by this property by giving the value of the parent object, to access.
         /// </summary>
         /// <param name="objParent">The parent object.</param>
@@ -36,7 +41,7 @@
         /// <param name="propertyIndexes">Stack of accessor objects that are used to pull values from within the tree.</param>
         /// <returns>The value of the object at PathContext.</returns>
         [Obsolete("Used internally, do not use.", false)]
-        object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls = false);
+        object Get(object context, string pathContext, Stack<IIndexedProperty> propertyIndexes, bool forceCoalesceNulls);
 
         /// <summary>
         /// Returns the value of the object defined by this property by giving the value of the parent object, to access.
@@ -59,5 +64,6 @@
         /// </summary>
         /// <value><c>true</c> if coalesce nulls; otherwise, <c>false</c>.</value>
         bool CoalesceNulls { get; set; }
+
     }
 }

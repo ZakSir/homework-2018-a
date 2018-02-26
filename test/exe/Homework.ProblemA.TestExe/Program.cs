@@ -10,20 +10,17 @@ namespace Homework.ProblemA.TestExe
     {
         static void Main(string[] args)
         {
-            Guid g = Guid.NewGuid();
+            Homework.FrontEnd.Models.TestObjects to = new FrontEnd.Models.TestObjects();
 
-            Console.WriteLine($"Starting: {g.ToString()}");
+            Indexed i = new Indexed(to.Bowser);
 
-            byte[] b = g.ToByteArray();
-
-            Console.WriteLine($"As Bytes: {JsonConvert.SerializeObject(b)}");
-
-            string basesixtyfour = Convert.ToBase64String(b);
-
-            Console.WriteLine($"As Base64: {basesixtyfour}");
+            foreach (var x in i.ToFlatDictionary())
+            {
+                Console.WriteLine($"[{x.Key}] = {x.Value}");
+            }
 
             Console.ReadLine();
+
         }
     }
 }
-      

@@ -5,6 +5,8 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <Import Project="..\..\common_prod.props" />
+
   <ItemGroup>
     <ProjectReference Include="..\Homework.Reflection\Homework.Reflection.csproj" />
   </ItemGroup>

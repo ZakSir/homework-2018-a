@@ -5,6 +5,8 @@
     <RootNamespace>Homework</RootNamespace>
   </PropertyGroup>
 
+  <Import Project="..\..\common_prod.props" />
+
   <ItemGroup>
     <ProjectReference Include="..\Common\Homework.Common.csproj" />
     <ProjectReference Include="..\Homework.Resources\Homework.Resources.csproj" />

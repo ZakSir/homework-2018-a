@@ -55,7 +55,6 @@ namespace Homework.FrontEnd.Controllers.api
             }
         }
 
-
         [HttpGet]
         [Route("api/homework/similarities")]
         public IActionResult GetSimilarities([FromQuery]string A, [FromQuery] string B)

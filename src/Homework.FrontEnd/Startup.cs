@@ -4,10 +4,13 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.ExceptionServices;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Swashbuckle.AspNetCore.Swagger;
 
     /// <summary>
     /// Startup class for web service. 
@@ -45,6 +48,9 @@
                     var basePath = AppContext.BaseDirectory;
                     var xmlPath = Path.Combine(basePath, "Homework.FrontEnd.xml");
                     c.IncludeXmlComments(xmlPath);
+
+                    // api keys
+                    c.AddSecurityDefinition("Bearer", new ApiKeyScheme() { In = "header", Name = "Authorization", Type = "apiKey", Description = "test" });
                 });
 
                 Telemetry.Info("added swagger", "00ad2d28-4454-470f-91a3-a78ff03007e8");

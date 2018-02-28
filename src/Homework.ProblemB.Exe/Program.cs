@@ -62,6 +62,13 @@ namespace Homework.ProblemB.Exe
             HttpResponseMessage response = await client.GetAsync(apiUri, HttpCompletionOption.ResponseContentRead);
             Console.WriteLine($"response code: {response.StatusCode}");
 
+            if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                Console.WriteLine($"The Team {team} cannot be found({response.StatusCode}).");
+
+                Environment.Exit(3);
+            }
+
             string result = await response.Content.ReadAsStringAsync();
 
             Team teamObject = JsonConvert.DeserializeObject<Team>(result);
@@ -105,7 +112,7 @@ namespace Homework.ProblemB.Exe
                     }
 
                     Console.ResetColor();
-                    Console.Write("]");
+                    Console.Write("])");
                     break;
             }
         }

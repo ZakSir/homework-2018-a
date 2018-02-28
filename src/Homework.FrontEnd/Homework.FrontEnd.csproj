@@ -12,6 +12,7 @@
   <!-- Documenatation File -->
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Homework.FrontEnd.xml</DocumentationFile>
+    <UserSecretsId>c2a23688-6a96-4575-b60a-712fd6f17b61</UserSecretsId>
   </PropertyGroup>
 
   <Import Project="..\..\common_prod.props" />

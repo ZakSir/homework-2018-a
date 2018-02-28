@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Homework.ProblemA\Homework.ProblemA.csproj" />
     <ProjectReference Include="..\Common\Homework.Common.csproj" />
+    <ProjectReference Include="..\Homework.ProblemB\Homework.ProblemB.csproj" />
     <ProjectReference Include="..\Homework.Reflection\Homework.Reflection.csproj" />
     <ProjectReference Include="..\Homework.Resources\Homework.Resources.csproj" />
   </ItemGroup>

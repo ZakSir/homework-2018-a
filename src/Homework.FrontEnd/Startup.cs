@@ -19,7 +19,7 @@
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -30,6 +30,7 @@
             try
             {
                 services.AddMvc();
+                services.AddSingleton<IConfiguration>(this.Configuration);
 
                 Telemetry.Info("added mvc", "872992b5-0d91-4243-80e2-3cce7a16cf00");
 

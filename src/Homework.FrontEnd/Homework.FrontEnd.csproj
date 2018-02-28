@@ -35,7 +35,7 @@
     <ProjectReference Include="..\Homework.Resources\Homework.Resources.csproj" />
   </ItemGroup>
   <Target Condition="'$(Build_Repository_Name)' != ''" Name="MyPreCompileTarget" BeforeTargets="Build">
-    <Exec Command="gulp build -LLLL" />
+    <Exec Condition="'$(Build_Repository_Name)' != ''" Command="gulp build -LLLL" />
   </Target>
 
 </Project>

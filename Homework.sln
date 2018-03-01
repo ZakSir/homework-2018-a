@@ -32,9 +32,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.FrontEnd", "src\Ho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAutoRestEXE", "test\exe\TestAutoRestEXE\TestAutoRestEXE.csproj", "{02C92BAE-4665-46CE-A039-970E6A6A53F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemB.Exe", "src\Homework.ProblemB.Exe\Homework.ProblemB.Exe.csproj", "{379D8F11-875E-498C-A835-44F5E646EA7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.ProblemB.Exe", "src\Homework.ProblemB.Exe\Homework.ProblemB.Exe.csproj", "{379D8F11-875E-498C-A835-44F5E646EA7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework.ProblemB", "src\Homework.ProblemB\Homework.ProblemB.csproj", "{5A5A8BCB-59AE-4346-B3DA-604531259677}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homework.ProblemB", "src\Homework.ProblemB\Homework.ProblemB.csproj", "{5A5A8BCB-59AE-4346-B3DA-604531259677}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Homework.ProblemC.Database", "src\Homework.ProblemC.Database\Homework.ProblemC.Database.sqlproj", "{76562E5C-589A-4EAD-92AA-99139B05D1D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +126,18 @@ Global
 		{5A5A8BCB-59AE-4346-B3DA-604531259677}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A5A8BCB-59AE-4346-B3DA-604531259677}.Release|x64.ActiveCfg = Release|Any CPU
 		{5A5A8BCB-59AE-4346-B3DA-604531259677}.Release|x64.Build.0 = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|x64.Build.0 = Release|Any CPU
+		{76562E5C-589A-4EAD-92AA-99139B05D1D8}.Release|x64.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

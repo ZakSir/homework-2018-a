@@ -64,9 +64,12 @@
     <Build Include="Person.sql" />
     <Build Include="PetsOwners.sql" />
     <Build Include="spTransferPets.sql" />
-    <Build Include="GetAshyPets.sql" />
+    <Build Include="spGetAshyPets.sql" />
     <Build Include="Countries.sql" />
     <Build Include="Policies.sql" />
+    <Build Include="spGetPolicies.sql" />
+    <Build Include="spGetTodaysBirthdays.sql" />
+    <Build Include="spSearchForBreed.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Homework.ProblemC.Database.refactorlog" />

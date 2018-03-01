@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spGetTodaysBirthdays]
-	@param1 int = 0,
-	@param2 int
 AS
-	SELECT @param1, @param2
+	SELECT dbo.Pets.Name, dbo.Pets.Birthdate
+	FROM dbo.Pets
+	WHERE dbo.Pets.BirthDayOfYear = DATEPART(dayofyear,GETUTCDATE())
 RETURN 0

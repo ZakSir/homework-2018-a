@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spGetPolicies]
-	@personId BIGINT NOT NULL
+	@personId BIGINT
 AS
 	SELECT CONCAT(dbo.Policies.CountryOfIssuance, RIGHT(CONCAT('0000000000', ISNULL(3,'')), 10))
 	FROM Policies 

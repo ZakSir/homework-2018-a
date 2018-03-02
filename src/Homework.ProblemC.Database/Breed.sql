@@ -1,8 +1,9 @@
 ﻿CREATE TABLE [dbo].[Breed]
 (
 	[Id] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    [AKCName] NVARCHAR(128) NOT NULL, 
-    [DisplayName] NVARCHAR(128) NULL
+    [DisplayName] NVARCHAR(128) NOT NULL, 
+    [Link]	 NVARCHAR(512) NOT NULL, 
+    [AnimalTypeId] INT NOT NULL
 )
 
 GO

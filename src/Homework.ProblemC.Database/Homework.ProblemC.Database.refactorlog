@@ -28,4 +28,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="BirthDayOfYear" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="e3bd4b9f-997e-4d51-af5d-708b46d47e07" ChangeDateTime="03/02/2018 04:33:26">
+    <Property Name="ElementName" Value="[dbo].[Breed].[AnimalType]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Breed]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AnimalTypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c21fc8bf-c2c8-43bc-9882-b5c6e176a591" ChangeDateTime="03/02/2018 05:00:56">
+    <Property Name="ElementName" Value="[dbo].[Breed].[AKCLink]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Breed]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[Link]" />
+  </Operation>
 </Operations>

@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spTransferPets]
-	@previousOwner BIGINT NOT NULL,
-	@newOwner BIGINT NOT NULL
+	@previousOwner BIGINT,
+	@newOwner BIGINT
 AS
 	BEGIN TRANSACTION;  
 		INSERT INTO dbo.PetsOwners([OwnerId], [PetId])

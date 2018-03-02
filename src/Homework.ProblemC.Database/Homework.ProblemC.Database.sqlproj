@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{76562e5c-589a-4ead-92aa-99139b05d1d8}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <GenerateCreateScript>True</GenerateCreateScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -64,13 +65,22 @@
     <Build Include="Person.sql" />
     <Build Include="PetsOwners.sql" />
     <Build Include="spTransferPets.sql" />
-    <Build Include="GetAshyPets.sql" />
     <Build Include="Countries.sql" />
     <Build Include="Policies.sql" />
     <Build Include="spGetPolicies.sql" />
     <Build Include="spGetTodaysBirthdays.sql" />
+    <Build Include="spGetAshyPets.sql" />
+    <Build Include="spSearchForBreed.sql" />
+    <Build Include="Animal.sql" />
+    <Build Include="spAddPerson.sql" />
+    <Build Include="spAddPet.sql" />
+    <Build Include="spAddPolicy.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Homework.ProblemC.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MakeTestData.sql" />
+    <None Include="Homework.ProblemC.Database.publish.xml" />
   </ItemGroup>
 </Project>
